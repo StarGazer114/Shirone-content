@@ -1,4 +1,7 @@
-name: Trigger site build
+name: Deploy site
+
+# 内容仓推送（或手动触发）时，调用 Cloudflare Pages 的 Deploy Hook 重新构建站点。
+# 代码仓本身的推送由 Cloudflare Pages 的 Git 集成直接触发，无需经过这里。
 
 on:
   push:
@@ -9,24 +12,25 @@ on:
       - "config/**"
       - "assets/**"
       - "public/**"
+  workflow_dispatch:
 
 concurrency:
-  group: trigger-build
+  group: deploy-hook
   cancel-in-progress: true
 
 jobs:
-  dispatch:
+  trigger:
     runs-on: ubuntu-latest
     steps:
-      - name: Send repository_dispatch to code repository
+      - name: Call Cloudflare Pages deploy hook
         env:
-          DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
-          SHA: ${{ github.sha }}
+          DEPLOY_HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
         run: |
           set -euo pipefail
-          curl --fail-with-body --silent --show-error \
-            --request POST \
-            --header "Accept: application/vnd.github+json" \
-            --header "Authorization: Bearer $DISPATCH_TOKEN" \
-            "https://api.github.com/repos/StarGazer114/Shirone-blog/dispatches" \
-            --data "{\"event_type\":\"content-updated\",\"client_payload\":{\"sha\":\"$SHA\"}}"
+          if [ -z "${DEPLOY_HOOK:-}" ]; then
+            echo "缺少 CF_DEPLOY_HOOK secret，请在仓库 Settings > Secrets 中添加" >&2
+            exit 1
+          fi
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 2 \
+            --max-time 30 --request POST "$DEPLOY_HOOK"
+          echo "已触发 Cloudflare Pages 构建"
