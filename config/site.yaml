@@ -18,6 +18,8 @@ banner:
   homeText:
     enable: true
     title: "拾光小阁"
+    # 每日一言：运行时拉取，返回 ["句子", ...] 或 {"text": "句子"}；失败自动回退下面的静态 subtitle
+    apiUrl: "https://uapis.cn/api/v1/saying"
     subtitle:
       - "特別なことはないけど、君がいると十分です"
       - "今でもあなたは私の光"
