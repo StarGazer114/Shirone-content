@@ -1,0 +1,32 @@
+name: Trigger site build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - "data/**"
+      - "config/**"
+      - "assets/**"
+      - "public/**"
+
+concurrency:
+  group: trigger-build
+  cancel-in-progress: true
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository_dispatch to code repository
+        env:
+          DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer $DISPATCH_TOKEN" \
+            "https://api.github.com/repos/StarGazer114/Shirone-blog/dispatches" \
+            --data "{\"event_type\":\"content-updated\",\"client_payload\":{\"sha\":\"$SHA\"}}"
