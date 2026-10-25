@@ -381,6 +381,12 @@ content:
     path: config/music.yaml
     format: code
 
+  - name: config-memos
+    label: Memos 说说接入
+    type: file
+    path: config/memos.yaml
+    format: code
+
   - name: config-font
     label: 字体
     type: file

@@ -1,0 +1,7 @@
+# Memos 说说接入（覆盖 src/config/memosConfig.ts 默认值）
+enable: true
+apiUrl: "https://memoapi.bear556.top/api/v1/memos"
+assetBaseUrl: "https://memoapi.bear556.top"
+pageSize: 50
+filter: ""
+fallbackToLocal: true
