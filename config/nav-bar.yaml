@@ -1,0 +1,23 @@
+links:
+  - preset: Home
+  - preset: Archive
+  - name: "Links"
+    icon: "material-symbols:link-rounded"
+    children:
+      - name: "GitHub"
+        url: "https://github.com/StarGazer114"
+        icon: "fa7-brands:github"
+        external: true
+      - name: "X"
+        url: "https://x.com/bear36609893920"
+        icon: "fa7-brands:x-twitter"
+        external: true
+  - name: "开往"
+    url: "https://www.travellings.cn/go.html"
+    icon: "material-symbols:subway-rounded"
+    external: true
+  - name: "About"
+    icon: "material-symbols:info-rounded"
+    children:
+      - preset: About
+      - preset: Friends

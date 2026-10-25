@@ -1,0 +1,17 @@
+enable: true
+provider: "giscus"
+lazy: true
+giscus:
+  repo: "StarGazer114/giscus-data"
+  repoId: "R_kgDOSUigJA"
+  category: "Announcements"
+  categoryId: "DIC_kwDOSUigJM4C8W7_"
+  mapping: "pathname"
+  strict: false
+  reactionsEnabled: true
+  emitMetadata: false
+  inputPosition: "top"
+  theme:
+    light: "light"
+    dark: "dark"
+  lang: "zh-CN"

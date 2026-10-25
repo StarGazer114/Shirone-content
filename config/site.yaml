@@ -1,0 +1,40 @@
+# 站点核心配置（覆盖 src/config/siteConfig.ts 默认值）
+site: "https://blog.bear556.top/"
+base: "/"
+title: "拾光小阁"
+subtitle: ""
+lang: "zh_CN"
+timeZone: "Asia/Shanghai"
+themeColor:
+  hue: 240
+  fixed: false
+banner:
+  src:
+    desktop:
+      - "assets/images/banner/desktop/1.webp"
+    mobile:
+      - "assets/images/banner/mobile/1.webp"
+  position: "center"
+  homeText:
+    enable: true
+    title: "拾光小阁"
+    subtitle:
+      - "特別なことはないけど、君がいると十分です"
+      - "今でもあなたは私の光"
+      - "君ってさ、知らないうちに私の毎日になってたよ"
+      - "君と話すと、なんか毎日がちょっと楽しくなるんだ"
+      - "今日はなんでもない日。でも、ちょっとだけいい日"
+    typewriter:
+      enable: true
+      speed: 100
+      deleteSpeed: 50
+      pauseTime: 2000
+      loop: true
+  carousel:
+    enable: true
+    interval: 4000
+  waves:
+    enable: true
+toc:
+  enable: true
+  depth: 2
