@@ -1,0 +1,406 @@
+# Pages CMS 配置 — Shirone 内容仓
+# 文档: https://pagescms.org/docs/
+#
+# 仓库结构约定（与 Shirone 内容分离架构一致）：
+#   content/posts  文章        content/moments  说说      content/series  系列
+#   content/spec   独立页面    data/*.ts        结构化数据  config/*.yaml  站点配置覆盖
+#   public/images  文章配图（原样发布）          assets/images 构建期压缩的图片
+
+# ── Actions ───────────────────────────────────
+actions:
+  - name: deploy
+    label: 部署网站
+    workflow: trigger-build.yml
+    ref: current
+    confirm:
+      title: 确认部署？
+      message: 将调用 Cloudflare Pages 的 Deploy Hook 重新构建并发布网站。
+      button: 部署
+
+# ── 媒体 ──────────────────────────────────────
+media:
+  - name: images
+    label: 文章图片
+    input: public/images
+    output: /images
+    extensions:
+      - png
+      - jpg
+      - jpeg
+      - gif
+      - webp
+      - svg
+      - avif
+    rename: safe
+
+# ── 内容集合 ──────────────────────────────────
+content:
+  # ============ 文章 ============
+  - name: posts
+    label: 博客文章
+    type: collection
+    path: content/posts
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, published, draft, category, tags]
+      sort: [published]
+      default:
+        sort: published
+        order: desc
+    fields:
+      - name: title
+        label: 标题
+        type: string
+        required: true
+        options:
+          maxlength: 120
+
+      - name: published
+        label: 发布日期
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+
+      - name: updated
+        label: 更新日期
+        type: date
+        options:
+          format: yyyy-MM-dd
+
+      - name: draft
+        label: 草稿
+        type: boolean
+        default: false
+
+      - name: description
+        label: 文章摘要
+        type: text
+        description: 用于 SEO 与列表展示，留空自动截取正文
+        options:
+          maxlength: 300
+
+      - name: image
+        label: 封面图
+        type: image
+        options:
+          media: images
+
+      - name: tags
+        label: 标签
+        type: string
+        list: true
+        description: 每个标签一项，可自由填写
+
+      - name: category
+        label: 分类
+        type: string
+        description: 留空则不显示分类
+
+      - name: pinned
+        label: 置顶
+        type: boolean
+        default: false
+
+      - name: comment
+        label: 开启评论
+        type: boolean
+        default: true
+
+      - name: lang
+        label: 语言
+        type: string
+        description: 留空跟随站点，如 zh-CN / en / ja
+
+      - name: series
+        label: 所属系列
+        type: string
+        description: 填系列 slug（对应 content/series 下的文件名），留空表示不属于系列
+
+      - name: seriesOrder
+        label: 系列内顺序
+        type: number
+        description: 留空则按发布日期排序
+
+      - name: encrypted
+        label: 加密文章
+        type: boolean
+        default: false
+
+      - name: password
+        label: 访问密码
+        type: string
+        description: 开启加密后生效，读者需输入密码查看
+
+      - name: passwordHint
+        label: 密码提示
+        type: string
+
+      - name: hideHomeContent
+        label: 首页隐藏正文
+        type: boolean
+        default: true
+        description: 加密文章默认在首页只显示标题
+
+      - name: alias
+        label: 别名
+        type: string
+
+      - name: permalink
+        label: 自定义固定链接
+        type: string
+        description: 优先级高于 alias
+
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          media: images
+
+  # ============ 说说 ============
+  - name: moments
+    label: 说说
+    type: collection
+    path: content/moments
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      primary: published
+      fields: [published, pinned, location, mood]
+      sort: [published]
+      default:
+        sort: published
+        order: desc
+    fields:
+      - name: published
+        label: 发布时间
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+
+      - name: pinned
+        label: 置顶
+        type: boolean
+        default: false
+
+      - name: location
+        label: 地点
+        type: string
+
+      - name: mood
+        label: 心情图标
+        type: string
+        description: Iconify 名称，如 material-symbols:sentiment-excited-outline-rounded
+
+      - name: tags
+        label: 标签
+        type: string
+        list: true
+
+      - name: images
+        label: 配图
+        type: object
+        list: true
+        fields:
+          - name: src
+            label: 图片
+            type: image
+            options:
+              media: images
+          - name: alt
+            label: 描述
+            type: string
+
+      - name: draft
+        label: 草稿
+        type: boolean
+        default: false
+
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          media: images
+
+  # ============ 系列 ============
+  - name: series
+    label: 系列
+    type: collection
+    path: content/series
+    filename:
+      template: "{primary}.md"
+      field: create
+    view:
+      primary: title
+      fields: [title, status, defaultCategory]
+    fields:
+      - name: title
+        label: 系列名
+        type: string
+        required: true
+
+      - name: status
+        label: 状态
+        type: select
+        options:
+          values: [ongoing, completed]
+          default: ongoing
+
+      - name: defaultCategory
+        label: 默认分类
+        type: string
+        description: 系列内文章未单独指定分类时的回退值
+
+      - name: body
+        label: 系列简介
+        type: rich-text
+        options:
+          format: markdown
+
+  # ============ 独立页面 ============
+  - name: about
+    label: 关于页
+    type: file
+    path: content/spec/about.md
+    fields:
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          media: images
+
+  - name: friends-page
+    label: 友链页说明
+    type: file
+    path: content/spec/friends.md
+    fields:
+      - name: body
+        label: 正文
+        type: rich-text
+        options:
+          format: markdown
+          media: images
+
+  # ============ 结构化数据 ============
+  - name: friends
+    label: 友链数据
+    type: file
+    path: data/friends.ts
+    format: code
+
+  - name: skills
+    label: 技能数据
+    type: file
+    path: data/skills.ts
+    format: code
+
+  - name: projects
+    label: 项目数据
+    type: file
+    path: data/projects.ts
+    format: code
+
+  - name: timeline
+    label: 时间轴数据
+    type: file
+    path: data/timeline.ts
+    format: code
+
+  - name: devices
+    label: 设备数据
+    type: file
+    path: data/devices.ts
+    format: code
+
+  - name: anime
+    label: 番剧数据
+    type: file
+    path: data/anime.ts
+    format: code
+
+  - name: games
+    label: 游戏数据
+    type: file
+    path: data/games.ts
+    format: code
+
+  - name: music-data
+    label: 音乐数据
+    type: file
+    path: data/music.ts
+    format: code
+
+  - name: compass
+    label: 站点罗盘数据
+    type: file
+    path: data/compass.ts
+    format: code
+
+  # ============ 站点配置覆盖 ============
+  - name: config-site
+    label: 站点配置
+    type: file
+    path: config/site.yaml
+    format: code
+
+  - name: config-profile
+    label: 个人资料
+    type: file
+    path: config/profile.yaml
+    format: code
+
+  - name: config-nav
+    label: 导航栏
+    type: file
+    path: config/nav-bar.yaml
+    format: code
+
+  - name: config-sidebar
+    label: 侧边栏
+    type: file
+    path: config/sidebar.yaml
+    format: code
+
+  - name: config-comment
+    label: 评论
+    type: file
+    path: config/comment.yaml
+    format: code
+
+  - name: config-music
+    label: 音乐播放器
+    type: file
+    path: config/music.yaml
+    format: code
+
+  - name: config-font
+    label: 字体
+    type: file
+    path: config/font.yaml
+    format: code
+
+  - name: config-umami
+    label: 统计
+    type: file
+    path: config/umami.yaml
+    format: code
+
+  - name: config-announcement
+    label: 公告
+    type: file
+    path: config/announcement.yaml
+    format: code
+
+  - name: config-license
+    label: 版权协议
+    type: file
+    path: config/license.yaml
+    format: code
