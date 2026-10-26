@@ -1,7 +1,7 @@
 // 友情链接数据配置
 // ⚠️ 此文件由 GitHub Actions 自动生成，请勿手动修改
-// 数据来源：https://github.com/StarGazer114/Shirone-content/issues
-// 提交友链：新建 Issue（无需标签），合并进本文件后自动部署
+// 数据来源：https://github.com/StarGazer114/Shirone-friends/issues
+// 申请友链：在该仓库提交 Issue，审核通过后自动更新到这里
 
 export interface FriendItem {
 	id: number;
@@ -15,11 +15,11 @@ export interface FriendItem {
 // 友情链接数据
 export const friendsData: FriendItem[] = [
 	{
-		id: 1,
-		title: "雪萌天文台",
-		imgurl: "https://img.snowy.moe/head.png",
-		desc: "发现巷子里的那颗星星",
-		siteurl: "https://blog.snowy.moe/",
+		id: 3,
+		title: "里世界",
+		imgurl: "https://leenet.xyz/avatar.png",
+		desc: "Welcome To The World Of Lee",
+		siteurl: "https://leenet.xyz",
 		tags: ["朋友们"],
 	},
 	{
@@ -31,11 +31,11 @@ export const friendsData: FriendItem[] = [
 		tags: ["朋友们"],
 	},
 	{
-		id: 3,
-		title: "里世界",
-		imgurl: "https://leenet.xyz/avatar.png",
-		desc: "Welcome To The World Of Lee",
-		siteurl: "https://leenet.xyz",
+		id: 1,
+		title: "雪萌天文台",
+		imgurl: "https://img.snowy.moe/head.png",
+		desc: "发现巷子里的那颗星星",
+		siteurl: "https://blog.snowy.moe/",
 		tags: ["朋友们"],
 	},
 ];
