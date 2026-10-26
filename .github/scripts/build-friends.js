@@ -107,6 +107,29 @@ function readExistingItems(file) {
   return items;
 }
 
+
+/**
+ * 历史条目存放于 seed 文件，与 Issue 完全解耦：
+ * Issue 删除/关闭后条目会消失，不会因为「已存在于 friends.ts」被误当作历史保留。
+ * 首次运行时自动把现有 friends.ts 的条目迁入 seed。
+ */
+function loadSeed(seedFile, currentFile) {
+  if (fs.existsSync(seedFile)) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(seedFile, "utf-8"));
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  }
+  const migrated = readExistingItems(currentFile);
+  if (migrated.length > 0) {
+    fs.writeFileSync(seedFile, JSON.stringify(migrated, null, 2) + "\n");
+    console.log("已迁移 " + migrated.length + " 条历史友链到 " + seedFile);
+  }
+  return migrated;
+}
+
 function generateFriendsTs(items, repo) {
   const body = items
     .map((item) =>
@@ -163,8 +186,9 @@ function generateFriendsTs(items, repo) {
 
 function main() {
   console.log("扫描仓库：" + ISSUES_REPO);
-  const existing = readExistingItems(OUTPUT_FILE);
-  console.log("已存在条目：" + existing.length);
+  const seedFile = process.env.SEED_FILE || "data/friends.seed.json";
+  const existing = loadSeed(seedFile, OUTPUT_FILE);
+  console.log("seed 条目：" + existing.length);
 
   const issues = ghApi(
     "/repos/" + ISSUES_REPO + "/issues?state=open&per_page=100",
