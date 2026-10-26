@@ -1,0 +1,64 @@
+name: Build friends from issues
+
+# 新建 Issue 即提交友链，不需要打任何标签；
+# 带 rejected / 拒绝 标签的 Issue 会被排除，关闭（closed）的 Issue 也会被移除。
+
+on:
+  issues:
+    types: [opened, edited, reopened, closed, deleted, labeled, unlabeled]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: read
+
+concurrency:
+  group: build-friends
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate data/friends.ts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUES_REPO: ${{ github.repository }}
+          OUTPUT_FILE: data/friends.ts
+        run: node .github/scripts/build-friends.js
+
+      - name: Commit changes
+        id: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/friends.ts
+          if git diff --staged --quiet; then
+            echo "没有变化，跳过提交"
+            echo "changed=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          git commit -m "chore(friends): 从 Issue 更新友链数据"
+          git push
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Trigger Cloudflare Pages deploy
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          DEPLOY_HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+        run: |
+          if [ -z "${DEPLOY_HOOK:-}" ]; then
+            echo "::warning::未配置 CF_DEPLOY_HOOK，跳过部署触发"
+            exit 0
+          fi
+          curl --fail-with-body --silent --show-error --retry 3 --retry-delay 2 \
+            --max-time 30 --request POST "$DEPLOY_HOOK"
+          echo "已触发 Cloudflare Pages 构建"

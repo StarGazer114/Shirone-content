@@ -1,6 +1,7 @@
 // 友情链接数据配置
 // ⚠️ 此文件由 GitHub Actions 自动生成，请勿手动修改
-// 数据来源：https://github.com/StarGazer114/firends-data
+// 数据来源：https://github.com/StarGazer114/Shirone-content/issues
+// 提交友链：新建 Issue（无需标签），合并进本文件后自动部署
 
 export interface FriendItem {
 	id: number;
@@ -14,7 +15,7 @@ export interface FriendItem {
 // 友情链接数据
 export const friendsData: FriendItem[] = [
 	{
-		id: 4,
+		id: 1,
 		title: "里世界",
 		imgurl: "https://leenet.xyz/avatar.png",
 		desc: "Welcome To The World Of Lee",
@@ -22,7 +23,7 @@ export const friendsData: FriendItem[] = [
 		tags: ["朋友们"],
 	},
 	{
-		id: 3,
+		id: 2,
 		title: "Watermelonabc的Blog",
 		imgurl: "https://blog.watermelonabc.top/assets/icon/Avatar.webp",
 		desc: "IDA，嘿嘿，IDA 🤤",
@@ -30,13 +31,13 @@ export const friendsData: FriendItem[] = [
 		tags: ["朋友们"],
 	},
 	{
-		id: 2,
+		id: 3,
 		title: "雪萌天文台",
 		imgurl: "https://img.snowy.moe/head.png",
 		desc: "发现巷子里的那颗星星",
 		siteurl: "https://blog.snowy.moe/",
 		tags: ["朋友们"],
-	}
+	},
 ];
 
 // 获取所有友情链接数据
