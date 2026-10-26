@@ -14,10 +14,8 @@ import fs from "node:fs";
 const GH_TOKEN = process.env.GH_TOKEN;
 const ISSUES_REPO = process.env.ISSUES_REPO;
 const OUTPUT_FILE = process.env.OUTPUT_FILE || "data/friends.ts";
-const REJECT_LABELS = (process.env.REJECT_LABELS || "rejected,拒绝")
-  .split(",")
-  .map((label) => label.trim())
-  .filter(Boolean);
+const APPROVED_LABEL = process.env.APPROVED_LABEL || "审核通过";
+const REJECT_LABEL = process.env.REJECT_LABEL || "审核拒绝";
 
 if (!GH_TOKEN || !ISSUES_REPO) {
   console.error("缺少 GH_TOKEN 或 ISSUES_REPO");
@@ -191,9 +189,13 @@ function main() {
   console.log("seed 条目：" + existing.length);
 
   const issues = ghApi(
-    "/repos/" + ISSUES_REPO + "/issues?state=open&per_page=100",
+    "/repos/" +
+      ISSUES_REPO +
+      "/issues?state=open&labels=" +
+      encodeURIComponent(APPROVED_LABEL) +
+      "&per_page=100",
   ).filter((issue) => !issue.pull_request);
-  console.log("open Issue：" + issues.length);
+  console.log("已审核通过 Issue：" + issues.length);
 
   const seen = new Set();
   const fromIssues = [];
@@ -202,8 +204,8 @@ function main() {
     const labels = (issue.labels ?? []).map((label) =>
       typeof label === "string" ? label : label.name,
     );
-    if (labels.some((name) => REJECT_LABELS.includes(name))) {
-      console.log("#" + issue.number + " 命中拒绝标签，跳过");
+    if (labels.includes(REJECT_LABEL)) {
+      console.log("#" + issue.number + " 已标记审核拒绝，跳过");
       continue;
     }
 
