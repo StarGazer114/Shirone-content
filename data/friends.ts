@@ -16,10 +16,10 @@ export interface FriendItem {
 export const friendsData: FriendItem[] = [
 	{
 		id: 1,
-		title: "里世界",
-		imgurl: "https://leenet.xyz/avatar.png",
-		desc: "Welcome To The World Of Lee",
-		siteurl: "https://leenet.xyz",
+		title: "雪萌天文台",
+		imgurl: "https://img.snowy.moe/head.png",
+		desc: "发现巷子里的那颗星星",
+		siteurl: "https://blog.snowy.moe/",
 		tags: ["朋友们"],
 	},
 	{
@@ -32,10 +32,10 @@ export const friendsData: FriendItem[] = [
 	},
 	{
 		id: 3,
-		title: "雪萌天文台",
-		imgurl: "https://img.snowy.moe/head.png",
-		desc: "发现巷子里的那颗星星",
-		siteurl: "https://blog.snowy.moe/",
+		title: "里世界",
+		imgurl: "https://leenet.xyz/avatar.png",
+		desc: "Welcome To The World Of Lee",
+		siteurl: "https://leenet.xyz",
 		tags: ["朋友们"],
 	},
 ];
