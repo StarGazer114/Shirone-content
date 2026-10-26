@@ -38,14 +38,6 @@ export const friendsData: FriendItem[] = [
 		siteurl: "https://blog.snowy.moe/",
 		tags: ["朋友们"],
 	},
-	{
-		id: 4,
-		title: "审核测试站点",
-		imgurl: "https://example.org/a.png",
-		desc: "审核流程验证",
-		siteurl: "https://example.org",
-		tags: [],
-	},
 ];
 
 // 获取所有友情链接数据
