@@ -67,8 +67,17 @@ jobs:
             exit 0
           fi
           git commit -m "chore(friends): 从 Issue 更新友链数据"
-          git push
-          echo "changed=true" >> $GITHUB_OUTPUT
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then
+              echo "changed=true" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "推送失败，第 $attempt 次重试"
+            git pull --rebase --autostash origin main || git rebase --abort
+            sleep 5
+          done
+          echo "::error::推送失败"
+          exit 1
 
       - name: Trigger Cloudflare Pages deploy
         if: steps.commit.outputs.changed == 'true'
