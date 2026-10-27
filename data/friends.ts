@@ -15,6 +15,14 @@ export interface FriendItem {
 // 友情链接数据
 export const friendsData: FriendItem[] = [
 	{
+		id: 4,
+		title: "自动建测试",
+		imgurl: "_No response_",
+		desc: "_No response_",
+		siteurl: "https://example.com",
+		tags: ["_No response_"],
+	},
+	{
 		id: 3,
 		title: "里世界",
 		imgurl: "https://leenet.xyz/avatar.png",
